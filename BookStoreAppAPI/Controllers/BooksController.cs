@@ -11,11 +11,13 @@ using BookStoreAppAPI.Models.Book;
 using AutoMapper.QueryableExtensions;
 using BookStoreAppAPI.Static;
 using BookStoreAppAPI.Models.Author;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BooksController : ControllerBase
     {
         private readonly BookStoreDbContext _context;
@@ -31,6 +33,7 @@ namespace BookStoreAppAPI.Controllers
 
         // GET: api/Books
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<BookReadOnlyDto>>> GetBooks()
         {
             var booksDtos = await _context.Books
@@ -42,6 +45,7 @@ namespace BookStoreAppAPI.Controllers
 
         // GET: api/Books/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<BookDetailsDto>> GetBook(int id)
         {
            
@@ -61,6 +65,7 @@ namespace BookStoreAppAPI.Controllers
 
         // PUT: api/Books/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutBook(int id, BookUpdateDto bookDto)
         {
             if (id != bookDto.Id)
@@ -99,6 +104,7 @@ namespace BookStoreAppAPI.Controllers
 
         // POST: api/Books
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<BookCreateDto>> PostBook(BookCreateDto bookDto)
         {
             var book = mapper.Map<Book>(bookDto);
@@ -111,6 +117,7 @@ namespace BookStoreAppAPI.Controllers
 
         // DELETE: api/Books/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteBook(int id)
         {
             var book = await _context.Books.FindAsync(id);

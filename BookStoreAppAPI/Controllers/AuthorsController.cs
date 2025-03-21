@@ -11,11 +11,13 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using System.Collections;
 using BookStoreAppAPI.Static;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BookStoreAppAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorsController : ControllerBase
     {
         private readonly BookStoreDbContext _context;
@@ -31,6 +33,7 @@ namespace BookStoreAppAPI.Controllers
 
         // GET: api/Authors
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<AuthorReadOnlyDto>>> GetAuthors()
         {
             
@@ -51,6 +54,7 @@ namespace BookStoreAppAPI.Controllers
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<AuthorReadOnlyDto>> GetAuthor(int id)
         {
 
@@ -78,6 +82,7 @@ namespace BookStoreAppAPI.Controllers
         // PUT: api/Authors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutAuthor(int id, AuthorUpdateDto authorDto)
         {
             if (id != authorDto.Id)
@@ -117,6 +122,7 @@ namespace BookStoreAppAPI.Controllers
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<AuthorCreateDto>> PostAuthor(AuthorCreateDto authorDto)
         {
            var author = mapper.Map<Author>(authorDto);
@@ -129,6 +135,7 @@ namespace BookStoreAppAPI.Controllers
 
         // DELETE: api/Authors/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
             var author = await _context.Authors.FindAsync(id);
